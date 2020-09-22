@@ -28,6 +28,8 @@ services:
     environment:
       HIVE_CORE_CONF_javax_jdo_option_ConnectionURL: "jdbc:postgresql://hive-metastore/metastore"
       SERVICE_PRECONDITION: "hive-metastore:9083"
+    volumes:
+      - /home/dev/dev/msdp-hive/bde2020/docker-hive/data:/opt/hive/examples/msdpfiles/
     ports:
       - "10000:10000"
   hive-metastore:
@@ -41,11 +43,24 @@ services:
       - "9083:9083"
   hive-metastore-postgresql:
     image: bde2020/hive-metastore-postgresql:2.3.0
+    ports:
+      - "5432:5432"
+    volumes: 
+      - ./docker_postgres_init.sql:/docker-entrypoint-initdb.d/docker_postgres_init.sql
+  hue:
+    image: gethue/hue:4.6.0
+    environment:
+        SERVICE_PRECONDITION: "namenode:50070 datanode:50075 hive-metastore-postgresql:5432 hive-metastore:9083"
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./hue-overrides.ini:/usr/share/hue/desktop/conf/hue-overrides.ini
+    depends_on:
+      - "hive-metastore-postgresql"
   presto-coordinator:
     image: shawnzhu/prestodb:0.181
     ports:
       - "8080:8080"
-
 volumes:
   namenode:
   datanode:
