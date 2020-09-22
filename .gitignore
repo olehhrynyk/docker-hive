@@ -1,1 +1,4 @@
-data
+
+msdp-hive-udf/target/
+
+msdp-hive-udf/.idea/
