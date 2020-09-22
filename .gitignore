@@ -2,3 +2,7 @@
 msdp-hive-udf/target/
 
 msdp-hive-udf/.idea/
+
+data
+
+presto
